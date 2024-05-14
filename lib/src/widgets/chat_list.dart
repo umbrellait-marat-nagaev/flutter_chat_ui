@@ -298,6 +298,7 @@ class _ChatListState extends State<ChatList>
             SliverPadding(
               padding: const EdgeInsets.only(bottom: 4),
               sliver: SliverAnimatedList(
+                // TODO(Khismatullin): fix the logic.
                 findChildIndexCallback: (Key key) {
                   if (key is ValueKey<Object>) {
                     final newIndex = widget.items.indexWhere(

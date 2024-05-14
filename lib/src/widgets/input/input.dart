@@ -17,6 +17,7 @@ import 'send_button.dart';
 class Input extends StatefulWidget {
   /// Creates [Input] widget.
   const Input({
+    this.attachmentBadgeCount,
     super.key,
     this.isAttachmentUploading,
     this.onAttachmentPressed,
@@ -39,6 +40,8 @@ class Input extends StatefulWidget {
 
   /// Customisation options for the [Input].
   final InputOptions options;
+
+  final int? attachmentBadgeCount;
 
   @override
   State<Input> createState() => _InputState();
@@ -146,13 +149,7 @@ class _InputState extends State<Input> {
       autofocus: !widget.options.autofocus,
       child: Padding(
         padding: InheritedChatTheme.of(context).theme.inputMargin,
-        child: Material(
-          borderRadius: InheritedChatTheme.of(context).theme.inputBorderRadius,
-          color: InheritedChatTheme.of(context).theme.inputBackgroundColor,
-          surfaceTintColor:
-              InheritedChatTheme.of(context).theme.inputSurfaceTintColor,
-          elevation: InheritedChatTheme.of(context).theme.inputElevation,
-          child: Container(
+        child: Container(
             decoration:
                 InheritedChatTheme.of(context).theme.inputContainerDecoration,
             padding: safeAreaInsets,
@@ -161,54 +158,52 @@ class _InputState extends State<Input> {
               children: [
                 if (widget.onAttachmentPressed != null)
                   AttachmentButton(
+                    count: widget.attachmentBadgeCount,
                     isLoading: widget.isAttachmentUploading ?? false,
                     onPressed: widget.onAttachmentPressed,
                     padding: buttonPadding,
                   ),
                 Expanded(
-                  child: Padding(
-                    padding: textPadding,
-                    child: TextField(
-                      enabled: widget.options.enabled,
-                      autocorrect: widget.options.autocorrect,
-                      autofocus: widget.options.autofocus,
-                      enableSuggestions: widget.options.enableSuggestions,
-                      controller: _textController,
-                      cursorColor: InheritedChatTheme.of(context)
-                          .theme
-                          .inputTextCursorColor,
-                      decoration: InheritedChatTheme.of(context)
-                          .theme
-                          .inputTextDecoration
-                          .copyWith(
-                            hintStyle: InheritedChatTheme.of(context)
-                                .theme
-                                .inputTextStyle
-                                .copyWith(
-                                  color: InheritedChatTheme.of(context)
-                                      .theme
-                                      .inputTextColor
-                                      .withOpacity(0.5),
-                                ),
-                            hintText:
-                                InheritedL10n.of(context).l10n.inputPlaceholder,
-                          ),
-                      focusNode: _inputFocusNode,
-                      keyboardType: widget.options.keyboardType,
-                      maxLines: 5,
-                      minLines: 1,
-                      onChanged: widget.options.onTextChanged,
-                      onTap: widget.options.onTextFieldTap,
-                      style: InheritedChatTheme.of(context)
-                          .theme
-                          .inputTextStyle
-                          .copyWith(
-                            color: InheritedChatTheme.of(context)
-                                .theme
-                                .inputTextColor,
-                          ),
-                      textCapitalization: TextCapitalization.sentences,
-                    ),
+                  child: TextField(
+                    enabled: widget.options.enableInput,
+                    autocorrect: widget.options.autocorrect,
+                    autofocus: widget.options.autofocus,
+                    enableSuggestions: widget.options.enableSuggestions,
+                    controller: _textController,
+                    cursorColor: InheritedChatTheme.of(context)
+                        .theme
+                        .inputTextCursorColor,
+                    decoration: InheritedChatTheme.of(context)
+                        .theme
+                        .inputTextDecoration
+                        .copyWith(
+                          hintStyle: InheritedChatTheme.of(context)
+                              .theme
+                              .inputTextStyle
+                              .copyWith(
+                                color: InheritedChatTheme.of(context)
+                                    .theme
+                                    .inputTextColor
+                                    .withOpacity(0.5),
+                              ),
+                          hintText:
+                              InheritedL10n.of(context).l10n.inputPlaceholder,
+                        ),
+                    focusNode: _inputFocusNode,
+                    keyboardType: widget.options.keyboardType,
+                    maxLines: 5,
+                    minLines: 1,
+                    onChanged: widget.options.onTextChanged,
+                    onTap: widget.options.onTextFieldTap,
+                    style: InheritedChatTheme.of(context)
+                        .theme
+                        .inputTextStyle
+                        .copyWith(
+                          color: InheritedChatTheme.of(context)
+                              .theme
+                              .inputTextColor,
+                        ),
+                    textCapitalization: TextCapitalization.sentences,
                   ),
                 ),
                 ConstrainedBox(
@@ -226,7 +221,6 @@ class _InputState extends State<Input> {
               ],
             ),
           ),
-        ),
       ),
     );
   }
@@ -267,6 +261,7 @@ class InputOptions {
     this.autofocus = false,
     this.enableSuggestions = true,
     this.enabled = true,
+    this.enableInput = true,
   });
 
   /// Controls the [Input] clear behavior. Defaults to [InputClearMode.always].
@@ -305,4 +300,6 @@ class InputOptions {
 
   /// Controls the [TextInput] enabled behavior. Defaults to [true].
   final bool enabled;
+
+  final bool? enableInput;
 }

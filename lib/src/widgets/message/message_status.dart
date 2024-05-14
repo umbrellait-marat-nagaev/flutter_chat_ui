@@ -23,7 +23,8 @@ class MessageStatus extends StatelessWidget {
             ? InheritedChatTheme.of(context).theme.deliveredIcon!
             : Image.asset(
                 'assets/icon-delivered.png',
-                color: InheritedChatTheme.of(context).theme.primaryColor,
+                color:
+                    InheritedChatTheme.of(context).theme.attachmentBadgeColor,
                 package: 'flutter_chat_ui',
               );
       case types.Status.error:
@@ -39,7 +40,8 @@ class MessageStatus extends StatelessWidget {
             ? InheritedChatTheme.of(context).theme.seenIcon!
             : Image.asset(
                 'assets/icon-seen.png',
-                color: InheritedChatTheme.of(context).theme.primaryColor,
+                color:
+                    InheritedChatTheme.of(context).theme.attachmentBadgeColor,
                 package: 'flutter_chat_ui',
               );
       case types.Status.sending:
@@ -53,7 +55,7 @@ class MessageStatus extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     strokeWidth: 1.5,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      InheritedChatTheme.of(context).theme.primaryColor,
+                      InheritedChatTheme.of(context).theme.attachmentBadgeColor,
                     ),
                   ),
                 ),

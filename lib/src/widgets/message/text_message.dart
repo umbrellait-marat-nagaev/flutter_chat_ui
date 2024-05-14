@@ -3,14 +3,11 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_link_previewer/flutter_link_previewer.dart'
     show LinkPreview, regexLink;
 import 'package:flutter_parsed_text/flutter_parsed_text.dart';
+import 'package:intl/intl.dart';
 
-import '../../models/emoji_enlargement_behavior.dart';
-import '../../models/matchers.dart';
-import '../../models/pattern_style.dart';
-import '../../util.dart';
+import '../../../flutter_chat_ui.dart';
 import '../state/inherited_chat_theme.dart';
 import '../state/inherited_user.dart';
-import 'user_name.dart';
 
 /// A class that represents text message widget with optional link preview.
 class TextMessage extends StatelessWidget {
@@ -25,6 +22,8 @@ class TextMessage extends StatelessWidget {
     this.options = const TextMessageOptions(),
     required this.showName,
     required this.usePreviewData,
+    required this.currentUserIsAuthor,
+    required this.showStatus,
     this.userAgent,
   });
 
@@ -56,6 +55,10 @@ class TextMessage extends StatelessWidget {
 
   /// User agent to fetch preview data with.
   final String? userAgent;
+
+  final bool currentUserIsAuthor;
+
+  final bool showStatus;
 
   Widget _linkPreview(
     types.User user,
@@ -102,6 +105,12 @@ class TextMessage extends StatelessWidget {
     }
   }
 
+  String _formatDate(int dateTime) {
+    final format = DateFormat('HH:mm');
+    final date = format.format(DateTime.fromMillisecondsSinceEpoch(dateTime));
+    return date;
+  }
+
   Widget _textWidgetBuilder(
     types.User user,
     BuildContext context,
@@ -124,25 +133,46 @@ class TextMessage extends StatelessWidget {
         ? theme.sentEmojiMessageTextStyle
         : theme.receivedEmojiMessageTextStyle;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        if (showName)
-          nameBuilder?.call(message.author) ?? UserName(author: message.author),
-        if (enlargeEmojis)
-          if (options.isTextSelectable)
-            SelectableText(message.text, style: emojiTextStyle)
-          else
-            Text(message.text, style: emojiTextStyle)
-        else
-          TextMessageText(
-            bodyLinkTextStyle: bodyLinkTextStyle,
-            bodyTextStyle: bodyTextStyle,
-            boldTextStyle: boldTextStyle,
-            codeTextStyle: codeTextStyle,
-            options: options,
-            text: message.text,
-          ),
+        Column(
+          crossAxisAlignment: user.id == message.author.id
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.start,
+          children: [
+            if (showName)
+              nameBuilder?.call(message.author) ?? UserName(author: message.author),
+            if (enlargeEmojis)
+              if (options.isTextSelectable)
+                SelectableText(message.text, style: emojiTextStyle)
+              else
+                Text(message.text, style: emojiTextStyle)
+            else
+              TextMessageText(
+                bodyLinkTextStyle: bodyLinkTextStyle,
+                bodyTextStyle: bodyTextStyle,
+                boldTextStyle: boldTextStyle,
+                codeTextStyle: codeTextStyle,
+                options: options,
+                text: message.text,
+              ),
+            if (message.createdAt != null) const SizedBox(height: 5),
+            if (message.createdAt != null)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    _formatDate(message.createdAt!),
+                    style: theme.dateTimeTextStyle,
+                  ),
+                  if (currentUserIsAuthor && showStatus)
+                    const SizedBox(width: 2),
+                  if (currentUserIsAuthor && showStatus)
+                    MessageStatus(status: message.status),
+                ],
+              ),
+          ],
+        ),
       ],
     );
   }

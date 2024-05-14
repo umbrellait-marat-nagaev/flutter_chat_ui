@@ -37,6 +37,7 @@ class Chat extends StatefulWidget {
   /// Creates a chat widget.
   const Chat({
     super.key,
+    this.attachmentBadgeCount = 0,
     this.audioMessageBuilder,
     this.avatarBuilder,
     this.bubbleBuilder,
@@ -103,6 +104,7 @@ class Chat extends StatefulWidget {
     this.slidableMessageBuilder,
     this.isLeftStatus = false,
     this.messageWidthRatio = 0.72,
+    this.spacerHeight,
   });
 
   /// See [Message.audioMessageBuilder].
@@ -337,6 +339,11 @@ class Chat extends StatefulWidget {
   /// Width ratio for message bubble.
   final double messageWidthRatio;
 
+  final int? attachmentBadgeCount;
+
+  final double? spacerHeight;
+
+
   @override
   State<Chat> createState() => ChatState();
 }
@@ -448,7 +455,7 @@ class ChatState extends State<Chat> {
           );
     } else if (object is MessageSpacer) {
       return SizedBox(
-        height: object.height,
+        height: widget.spacerHeight ?? object.height,
       );
     } else if (object is UnreadHeaderData) {
       return AutoScrollTag(
@@ -667,6 +674,8 @@ class ChatState extends State<Chat> {
                       ),
                       widget.customBottomWidget ??
                           Input(
+                            key: widget.key,
+                            attachmentBadgeCount: widget.attachmentBadgeCount,
                             isAttachmentUploading: widget.isAttachmentUploading,
                             onAttachmentPressed: widget.onAttachmentPressed,
                             onSendPressed: widget.onSendPressed,

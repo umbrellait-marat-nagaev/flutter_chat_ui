@@ -207,9 +207,12 @@ class Message extends StatelessWidget {
     bool enlargeEmojis,
   ) {
     final defaultMessage = (enlargeEmojis && hideBackgroundOnEmojiMessages)
-        ? _messageBuilder()
+        ? _messageBuilder(currentUserIsAuthor)
         : Container(
             decoration: BoxDecoration(
+              border: Border.all(
+                color: InheritedChatTheme.of(context).theme.borderColor,
+              ),
               borderRadius: borderRadius,
               color: !currentUserIsAuthor ||
                       message.type == types.MessageType.image
@@ -218,19 +221,19 @@ class Message extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: borderRadius,
-              child: _messageBuilder(),
+              child: _messageBuilder(currentUserIsAuthor),
             ),
           );
     return bubbleBuilder != null
         ? bubbleBuilder!(
-            _messageBuilder(),
+            _messageBuilder(currentUserIsAuthor),
             message: message,
             nextMessageInGroup: roundBorder,
           )
         : defaultMessage;
   }
 
-  Widget _messageBuilder() {
+  Widget _messageBuilder(bool currentUserIsAuthor) {
     switch (message.type) {
       case types.MessageType.audio:
         final audioMessage = message as types.AudioMessage;
@@ -275,6 +278,8 @@ class Message extends StatelessWidget {
                 showName: showName,
                 usePreviewData: usePreviewData,
                 userAgent: userAgent,
+                currentUserIsAuthor: currentUserIsAuthor,
+                showStatus: showStatus,
               );
       case types.MessageType.video:
         final videoMessage = message as types.VideoMessage;
@@ -328,16 +333,16 @@ class Message extends StatelessWidget {
             topEnd: Radius.circular(messageBorderRadius),
             topStart: Radius.circular(messageBorderRadius),
           )
-        : BorderRadius.only(
-            bottomLeft: Radius.circular(
-              currentUserIsAuthor || roundBorder ? messageBorderRadius : 0,
-            ),
-            bottomRight: Radius.circular(
-              !currentUserIsAuthor || roundBorder ? messageBorderRadius : 0,
-            ),
-            topLeft: Radius.circular(messageBorderRadius),
-            topRight: Radius.circular(messageBorderRadius),
-          );
+        : BorderRadius.all(Radius.circular(messageBorderRadius));
+    //   bottomLeft: Radius.circular(
+    //     currentUserIsAuthor || roundBorder ? messageBorderRadius : 0,
+    //   ),
+    //   bottomRight: Radius.circular(
+    //     !currentUserIsAuthor || roundBorder ? messageBorderRadius : 0,
+    //   ),
+    //   topLeft: Radius.circular(messageBorderRadius),
+    //   topRight: Radius.circular(messageBorderRadius),
+    // );
 
     final bubbleMargin = InheritedChatTheme.of(context).theme.bubbleMargin ??
         (bubbleRtlAlignment == BubbleRtlAlignment.left
@@ -349,7 +354,7 @@ class Message extends StatelessWidget {
             : EdgeInsets.only(
                 bottom: 4,
                 left: 20 + (isMobile ? query.padding.left : 0),
-                right: isMobile ? query.padding.right : 0,
+                right: 20,
               ));
 
     return Container(
@@ -369,7 +374,7 @@ class Message extends StatelessWidget {
             : TextDirection.ltr,
         children: [
           if (!currentUserIsAuthor && showUserAvatars) _avatarBuilder(),
-          if (currentUserIsAuthor && isLeftStatus) _statusIcon(context),
+          // if (currentUserIsAuthor && isLeftStatus) _statusIcon(context),
           ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: messageWidth.toDouble(),

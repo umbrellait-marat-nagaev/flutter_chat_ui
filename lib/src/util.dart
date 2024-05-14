@@ -60,22 +60,31 @@ String getVerboseDateTimeRepresentation(
   String? dateLocale,
   DateFormat? timeFormat,
 }) {
-  final formattedDate = dateFormat != null
-      ? dateFormat.format(dateTime)
-      : DateFormat.MMMd(dateLocale).format(dateTime);
-  final formattedTime = timeFormat != null
-      ? timeFormat.format(dateTime)
-      : DateFormat.Hm(dateLocale).format(dateTime);
-  final localDateTime = dateTime.toLocal();
   final now = DateTime.now();
+  final isToday = DateTime(now.year, now.month, now.day) ==
+      DateTime(dateTime.year, dateTime.month, dateTime.day);
+  final isThisYear = DateTime(dateTime.year) == DateTime(now.year);
+  final formattedDate = isToday
+      ? 'Сегодня'
+      : dateFormat != null
+      ? dateFormat.format(dateTime)
+      : !isThisYear
+      ? DateFormat.yMMMd(dateLocale).format(dateTime)
+      : DateFormat.MMMd(dateLocale).format(dateTime);
+  // final formattedTime = timeFormat != null
+  //     ? timeFormat.format(dateTime)
+  //     : DateFormat.Hm(dateLocale).format(dateTime);
+  // final localDateTime = dateTime.toLocal();
 
-  if (localDateTime.day == now.day &&
-      localDateTime.month == now.month &&
-      localDateTime.year == now.year) {
-    return formattedTime;
-  }
+  // if (localDateTime.day == now.day &&
+  //     localDateTime.month == now.month &&
+  //     localDateTime.year == now.year) {
+  //   return formattedTime;
+  // }
 
-  return '$formattedDate, $formattedTime';
+  return formattedDate;
+  // return '$formattedDate, $
+  // formattedTime;
 }
 
 /// Returns whether the [message] consists of a single emoji or multiple emojis

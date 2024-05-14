@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'state/inherited_chat_theme.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import '../conditional/conditional.dart';
@@ -62,35 +64,74 @@ class ImageGallery extends StatelessWidget {
           onDismissed: (direction) => onClosePressed(),
           child: Stack(
             children: [
-              PhotoViewGallery.builder(
-                builder: (BuildContext context, int index) =>
-                    PhotoViewGalleryPageOptions(
-                  imageProvider: imageProviderBuilder != null
-                      ? imageProviderBuilder!(
-                          uri: images[index].uri,
-                          imageHeaders: imageHeaders,
-                          conditional: Conditional(),
-                        )
-                      : Conditional().getProvider(
-                          images[index].uri,
-                          headers: imageHeaders,
-                        ),
-                  minScale: options.minScale,
-                  maxScale: options.maxScale,
+              Container(
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                  gradient: InheritedChatTheme.of(context)
+                      .theme
+                      .imageBackGroundGradient,
                 ),
-                itemCount: images.length,
-                loadingBuilder: (context, event) =>
-                    _imageGalleryLoadingBuilder(event),
-                pageController: pageController,
-                scrollPhysics: const ClampingScrollPhysics(),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 64),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height -
+                        InheritedChatTheme.of(context)
+                            .theme
+                            .inputMargin
+                            .bottom -
+                        (MediaQuery.of(context).padding.top + 64),
+                    child: PhotoViewGallery.builder(
+                      backgroundDecoration:
+                          const BoxDecoration(color: Colors.transparent),
+                      builder: (BuildContext context, int index) =>
+                          PhotoViewGalleryPageOptions(
+                        imageProvider: imageProviderBuilder != null
+                            ? imageProviderBuilder!(
+                                uri: images[index].uri,
+                                imageHeaders: imageHeaders,
+                                conditional: Conditional(),
+                              )
+                            : Conditional().getProvider(
+                                images[index].uri,
+                                headers: imageHeaders,
+                              ),
+                        minScale: options.minScale,
+                        maxScale: options.maxScale,
+                      ),
+                      itemCount: images.length,
+                      loadingBuilder: (context, event) =>
+                          _imageGalleryLoadingBuilder(event),
+                      pageController: pageController,
+                      scrollPhysics: const ClampingScrollPhysics(),
+                    ),
+                  ),
+                ),
               ),
               Positioned.directional(
                 end: 16,
                 textDirection: Directionality.of(context),
-                top: 56,
-                child: CloseButton(
-                  color: Colors.white,
-                  onPressed: onClosePressed,
+                top: 16,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: InheritedChatTheme.of(context)
+                        .theme
+                        .attachmentBadgeColor
+                        .withOpacity(0.8),
+                    shape: BoxShape.circle,
+                  ),
+                  child: GestureDetector(
+                    onTap: onClosePressed,
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ),
                 ),
               ),
             ],

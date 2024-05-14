@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class IOConditional extends BaseConditional {
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
     if (uri.startsWith('http')) {
       return NetworkImage(uri, headers: headers);
+    } else if (uri.startsWith('data')) {
+      return MemoryImage(base64Decode(uri.split('base64,').last));
     } else {
       return FileImage(File(uri));
     }
