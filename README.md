@@ -14,10 +14,6 @@
 
 <br>
 
-<p align="center">
-  🇺🇦🇺🇦 We are Ukrainians. If you enjoy our work, please <a href="https://u24.gov.ua">consider donating</a> to help save our country. 🇺🇦🇺🇦
-</p>
-
 <br>
 
 <p align="center">
