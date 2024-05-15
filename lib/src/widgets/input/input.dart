@@ -152,7 +152,7 @@ class _InputState extends State<Input> {
         child: Container(
             decoration:
                 InheritedChatTheme.of(context).theme.inputContainerDecoration,
-            padding: safeAreaInsets,
+            // padding: safeAreaInsets,
             child: Row(
               textDirection: TextDirection.ltr,
               children: [
