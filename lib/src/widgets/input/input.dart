@@ -90,7 +90,7 @@ class _InputState extends State<Input> {
       _sendButtonVisible = false;
     } else if (widget.options.sendButtonVisibilityMode ==
         SendButtonVisibilityMode.editing) {
-      _sendButtonVisible = _textController.text.trim() != '';
+      _sendButtonVisible = true;
       _textController.addListener(_handleTextControllerChange);
     } else {
       _sendButtonVisible = true;
@@ -99,14 +99,14 @@ class _InputState extends State<Input> {
 
   void _handleSendPressed() {
     final trimmedText = _textController.text.trim();
-    if (trimmedText != '') {
+    // if (trimmedText != '') {
       final partialText = types.PartialText(text: trimmedText);
       widget.onSendPressed(partialText);
 
       if (widget.options.inputClearMode == InputClearMode.always) {
         _textController.clear();
       }
-    }
+    // }
   }
 
   void _handleTextControllerChange() {
@@ -114,7 +114,7 @@ class _InputState extends State<Input> {
       return;
     }
     setState(() {
-      _sendButtonVisible = _textController.text.trim() != '';
+      // _sendButtonVisible = _textController.text.trim() != '';
     });
   }
 
